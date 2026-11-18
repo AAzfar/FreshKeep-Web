@@ -6,10 +6,14 @@ export interface SyncItem {
   title: string;
   category: string;
   lastUpdated: number; // Epoch timestamp for conflict resolution
+  barcode?: string | null;
   expiryDateEpoch?: number | null;
   quantity?: number;
+  rawJsonDetails?: string | null;
   isAvailable?: boolean;
   isOnBuyList?: boolean;
+  openedDateEpoch?: number | null;
+  boughtDateEpoch?: number | null;
 }
 
 const db = new Dexie('CompanionAppDB') as Dexie & {

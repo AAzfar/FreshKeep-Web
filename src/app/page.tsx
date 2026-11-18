@@ -56,20 +56,30 @@ function parseBackup(value: unknown): SyncItem[] {
   const seenIds = new Set<string>();
   return value.items.map((candidate, index) => {
     if (!isRecord(candidate)) throw new Error(`Item ${index + 1} is invalid.`);
-    const { id, title, category, lastUpdated, expiryDateEpoch, quantity, isAvailable, isOnBuyList } = candidate;
+    const {
+      id, title, category, lastUpdated, barcode, expiryDateEpoch, quantity, rawJsonDetails,
+      isAvailable, isOnBuyList, openedDateEpoch, boughtDateEpoch,
+    } = candidate;
     if (typeof id !== 'string' || !id || seenIds.has(id) || typeof title !== 'string' || !title.trim()
       || typeof category !== 'string' || !category || typeof lastUpdated !== 'number' || !Number.isFinite(lastUpdated)) {
       throw new Error(`Item ${index + 1} is missing required data or has a duplicate ID.`);
     }
     if ((expiryDateEpoch !== undefined && expiryDateEpoch !== null && (typeof expiryDateEpoch !== 'number' || !Number.isFinite(expiryDateEpoch)))
+      || (barcode !== undefined && barcode !== null && typeof barcode !== 'string')
       || (quantity !== undefined && (typeof quantity !== 'number' || !Number.isFinite(quantity)))
+      || (rawJsonDetails !== undefined && rawJsonDetails !== null && typeof rawJsonDetails !== 'string')
       || (isAvailable !== undefined && typeof isAvailable !== 'boolean')
-      || (isOnBuyList !== undefined && typeof isOnBuyList !== 'boolean')) {
+      || (isOnBuyList !== undefined && typeof isOnBuyList !== 'boolean')
+      || (openedDateEpoch !== undefined && openedDateEpoch !== null && (typeof openedDateEpoch !== 'number' || !Number.isFinite(openedDateEpoch)))
+      || (boughtDateEpoch !== undefined && boughtDateEpoch !== null && (typeof boughtDateEpoch !== 'number' || !Number.isFinite(boughtDateEpoch)))) {
       throw new Error(`Item ${index + 1} contains invalid field values.`);
     }
 
     seenIds.add(id);
-    return { id, title, category, lastUpdated, expiryDateEpoch, quantity, isAvailable, isOnBuyList };
+    return {
+      id, title, category, lastUpdated, barcode, expiryDateEpoch, quantity, rawJsonDetails,
+      isAvailable, isOnBuyList, openedDateEpoch, boughtDateEpoch,
+    };
   });
 }
 
